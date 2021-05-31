@@ -10,7 +10,6 @@ extensions = ['cogs.core', 'cogs.errorhandle']
 async def on_ready():
     print('Ready!')
 
-
 if __name__ == '__main__':
     for extension in extensions:
         try:

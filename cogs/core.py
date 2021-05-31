@@ -34,7 +34,9 @@ class Core(commands.Cog):
                     await ctx.send(f"{i} is an invalid role!")
                     return                                                   # --- MAKE EMBED
             rolelist.append(role)
+
 # ------------------------------------------- ^^^^^^^^^^ work with ROLES
+
         desc = f"""**Nice**!\n
         Press the `first` button to shuffle using `previous selected roles`
         Press the `second` button to give the users `new random role(s) | WIP`
@@ -45,7 +47,9 @@ class Core(commands.Cog):
         for i in rolelist:
             rrlist = rrlist + f"**{i.name}**\n"
         embed.add_field(name="**Fetched roles:**", value = rrlist)
+
 # ------------------------------------------- ^^^^^^^ set up EMBED
+
         msg = await ctx.send(embed = embed)
         for i in self.emlist:
             await msg.add_reaction(i)
@@ -58,25 +62,37 @@ class Core(commands.Cog):
             erembed = self.baseEmb(title = '**Error!**', description = 'Timed out!')
             await ctx.send(embed = erembed, delete_after = 5.0)
             return
+            
 # ------------------------------------------ ^ add reactions and get reaction
+
         def splitlist(lst, n):
             for i in range(0, len(lst), n):
                 yield lst[i:i + n]
-            
+
+# ------------------------------------------ ^ simple generator
+
         if str(reaction) == self.emlist[2]:
             await msg.delete()
             await ctx.send("Exited!", delete_after = 3)
+
         elif str(reaction) == self.emlist[0]:
+            await msg.delete()
             ctm = time.time()
             mlist = list()
-            loademb = self.baseEmb(title = '**Loading...**', description = "Please be patient...")
+            loademb = self.baseEmb(title = '**Loading...**', description = "Removing roles...")
             loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
             lmsg = await ctx.send(embed = loademb)
+            load = 0
+
             async with ctx.typing():
-                loademb = self.baseEmb(title = '**Loading...', description = "Removing roles from users...")
-                await lmsg.edit(embed = loademb)
                 for i in rolelist:
                     for x in ctx.guild.members:
+                        load += 1
+                        perc = load / len(ctx.guild.members) / len(rolelist) * 100
+                        if round(perc) % 5 == 0:
+                            loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... {round(perc)}%`\n`Total members... {len(mlist)}`")
+                            loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
+                            await lmsg.edit(embed = loademb)
                         if i in x.roles:
                             await x.remove_roles(i)
                             if not x in mlist:
@@ -88,9 +104,18 @@ class Core(commands.Cog):
                     slist.append(m)
                 num = len(mlist) / len(rolelist)
                 c = 0 
+                po = 0
+                mc = len(mlist)
                 for m in splitlist(mlist, int(num)):
                     for i in m:
+                        po += 1
+                        perc = po / len(mlist) * 100
+                        if round(perc):
+                            loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... ✅`\n`Distributing roles... {round(perc)}%`\n`Total members... {mc}`")
+                            loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
+                            await lmsg.edit(embed = loademb)
                         await i.add_roles(rolelist[c])
+                        mc -= 1
                     c += 1
                 c = 0
                 if not len(slist) == 0:
@@ -98,10 +123,14 @@ class Core(commands.Cog):
                         await l.add_roles(rolelist[c])
                         c += 1
             await lmsg.delete()
-        doneEmb = self.baseEmb(title = '**Done!**', description = f'**Done in:**\n**{round(time.time() - ctm, 2)}** seconds!')
+
+# ---------------------------------------------------------^^ distributing roles and removing them from members
+
+        doneEmb = self.baseEmb(title = '**Done!**', description = f'`Removing roles... ✅`\n`Distributing roles... ✅`\n\n**Done in:**\n**{round(time.time() - ctm, 2)}** seconds!')
         doneEmb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848681684265336872/checksecondary61.gif')
         await ctx.send(embed = doneEmb)
-                    
+
+# --------------------------------------------------------^^ end message
 
 
 def setup(bot):
