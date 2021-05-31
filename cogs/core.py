@@ -5,6 +5,7 @@ import datetime
 import time
 import random
 import itertools
+from discord import utils
 
 class Core(commands.Cog):
     emlist = ['<a:ani1:848589054866227230>', '<a:ani:848590642678333440>', '<a:ani3:848589054592155729>']
@@ -15,7 +16,7 @@ class Core(commands.Cog):
     def baseEmb(**kwargs):
         emb = discord.Embed(title = kwargs['title'], description=kwargs['description'], colour = int(0x4F27A1))
         emb.set_footer(text = f'Coded with love by:\nbillion#2126', icon_url = 'https://cdn.discordapp.com/avatars/147840568897044480/6c48b17182310a55565bb88791134d36.png')
-        emb.set_author(name='Randomizer | Noctus exclusive', icon_url='https://cdn.discordapp.com/attachments/842390346029727814/848566530446327838/a_54f9085a310256206cb22393285bebca.png')
+        emb.set_author(name='Noctus exclusive', icon_url='https://cdn.discordapp.com/attachments/842390346029727814/848566530446327838/a_54f9085a310256206cb22393285bebca.png')
         return emb
 
     @commands.command()
@@ -131,6 +132,45 @@ class Core(commands.Cog):
         await ctx.send(embed = doneEmb)
 
         # --------------------------------------------------------^^ end message
+
+    @commands.command()
+    async def av(self, ctx, *user):
+        if user:
+            m = user[0]
+            if m.startswith('<@!'):
+                m = m.lstrip('<@!')
+                m = m.rstrip('>')
+                member = utils.get(ctx.guild.members, id = int(m))
+                if not member:
+                    raise commands.BadArgument
+                else:
+                    avemb = self.baseEmb(title = f"{member.name}'s avatar", description = '')
+                    img = member.avatar_url
+                    avemb.set_image(url = img)
+                    await ctx.send(embed = avemb)
+            else:
+                for i in ctx.guild.members:
+                    if i.name.lower().startswith(user[0]):
+                        member = i
+                        break
+                    elif i.nick:
+                        if i.nick.lower().startswith(user[0]):
+                            member = i
+                            break
+                    else:
+                        member = None
+                if not member:
+                    raise commands.BadArgument
+                else:
+                    avemb = self.baseEmb(title = f"{member.name}'s avatar", description = '')
+                    img = member.avatar_url
+                    avemb.set_image(url = img)
+                    await ctx.send(embed = avemb)
+        else:
+            avemb = self.baseEmb(title = f"{ctx.author.name}'s avatar", description = '')
+            img = ctx.author.avatar_url
+            avemb.set_image(url = img)
+            await ctx.send(embed = avemb)
 
 
 def setup(bot):

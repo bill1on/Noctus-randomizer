@@ -42,6 +42,8 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'get':
                 await ctx.send('Please make sure the role name is written correctly.')
+            elif ctx.command.qualified_name == 'av':
+                await ctx.send("User not found.")
 
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permissions to run this command.")

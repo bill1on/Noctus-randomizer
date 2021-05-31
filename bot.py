@@ -1,8 +1,9 @@
 import discord
+from discord import activity
 from discord.ext import commands
 
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix= 'n!', intents = intents)
+client = commands.Bot(command_prefix= 'n!', intents = intents, activity = activity.CustomActivity(name = "hi"))
 extensions = ['cogs.core', 'cogs.errorhandle']
 
 
