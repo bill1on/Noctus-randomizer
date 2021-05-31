@@ -6,6 +6,7 @@ import time
 import random
 import itertools
 from discord import utils
+from discord.ext.commands.core import has_permissions
 
 class Core(commands.Cog):
     emlist = ['<a:ani1:848589054866227230>', '<a:ani:848590642678333440>', '<a:ani3:848589054592155729>']
@@ -20,7 +21,7 @@ class Core(commands.Cog):
         return emb
 
     @commands.command()
-    @commands.has_permissions(administrator = True)
+    @commands.check_any(commands.has_permissions(administrator = True), commands.is_owner())
     async def get(self, ctx, *roles):
         if len(roles) > 8:
             embed = self.baseEmb(title='Error!', description = "Can't fetch over **8** roles! Please try again!")
@@ -84,20 +85,23 @@ class Core(commands.Cog):
             loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
             lmsg = await ctx.send(embed = loademb)
             load = 0
-
+            ml = 0
+            nml = 0
             async with ctx.typing():
-                for i in rolelist:
-                    for x in ctx.guild.members:
-                        load += 1
-                        perc = load / len(ctx.guild.members) / len(rolelist) * 100
-                        if round(perc) % 5 == 0:
-                            loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... {round(perc)}%`\n`Total members... {len(mlist)}`")
-                            loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
-                            await lmsg.edit(embed = loademb)
+                for x in ctx.guild.members:
+                    load += 1
+                    for i in rolelist:
                         if i in x.roles:
                             await x.remove_roles(i)
                             if not x in mlist:
                                 mlist.append(x)
+                                ml += 1
+                    perc = load / len(ctx.guild.members) * 100
+                    if ml > nml and round(perc) %5 == 0:
+                        nml = ml
+                        loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... {round(perc, 2)}%`\n`Total members... {len(mlist)}`")
+                        loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
+                        await lmsg.edit(embed = loademb)
                 random.shuffle(mlist)
                 slist = list()
                 while not len(mlist) % len(rolelist) == 0:
@@ -112,7 +116,7 @@ class Core(commands.Cog):
                         po += 1
                         perc = po / len(mlist) * 100
                         if round(perc):
-                            loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... ✅`\n`Distributing roles... {round(perc)}%`\n`Total members... {mc}`")
+                            loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... ✅`\n`Distributing roles... {round(perc, 2)}%`\n`Total members... {mc}`")
                             loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
                             await lmsg.edit(embed = loademb)
                         await i.add_roles(rolelist[c])
