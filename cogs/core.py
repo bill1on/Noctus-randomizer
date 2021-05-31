@@ -35,7 +35,7 @@ class Core(commands.Cog):
                     return                                                   # --- MAKE EMBED
             rolelist.append(role)
 
-# ------------------------------------------- ^^^^^^^^^^ work with ROLES
+        # ------------------------------------------- ^^^^^^^^^^ work with ROLES
 
         desc = f"""**Nice**!\n
         Press the `first` button to shuffle using `previous selected roles`
@@ -48,7 +48,7 @@ class Core(commands.Cog):
             rrlist = rrlist + f"**{i.name}**\n"
         embed.add_field(name="**Fetched roles:**", value = rrlist)
 
-# ------------------------------------------- ^^^^^^^ set up EMBED
+        # ------------------------------------------- ^^^^^^^ set up EMBED
 
         msg = await ctx.send(embed = embed)
         for i in self.emlist:
@@ -63,13 +63,13 @@ class Core(commands.Cog):
             await ctx.send(embed = erembed, delete_after = 5.0)
             return
             
-# ------------------------------------------ ^ add reactions and get reaction
+        # ------------------------------------------ ^ add reactions and get reaction
 
         def splitlist(lst, n):
             for i in range(0, len(lst), n):
                 yield lst[i:i + n]
 
-# ------------------------------------------ ^ simple generator
+        # ------------------------------------------ ^ simple generator
 
         if str(reaction) == self.emlist[2]:
             await msg.delete()
@@ -124,13 +124,13 @@ class Core(commands.Cog):
                         c += 1
             await lmsg.delete()
 
-# ---------------------------------------------------------^^ distributing roles and removing them from members
+        # ---------------------------------------------------------^^ distributing roles and removing them from members
 
         doneEmb = self.baseEmb(title = '**Done!**', description = f'`Removing roles... ✅`\n`Distributing roles... ✅`\n\n**Done in:**\n**{round(time.time() - ctm, 2)}** seconds!')
         doneEmb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848681684265336872/checksecondary61.gif')
         await ctx.send(embed = doneEmb)
 
-# --------------------------------------------------------^^ end message
+        # --------------------------------------------------------^^ end message
 
 
 def setup(bot):
