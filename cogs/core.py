@@ -115,7 +115,7 @@ class Core(commands.Cog):
                     for i in m:
                         po += 1
                         perc = po / len(mlist) * 100
-                        if round(perc):
+                        if round(perc) %5 == 0:
                             loademb = self.baseEmb(title = '**Loading...**', description = f"`Removing roles... ✅`\n`Distributing roles... {round(perc, 2)}%`\n`Total members... {mc}`")
                             loademb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
                             await lmsg.edit(embed = loademb)
@@ -141,8 +141,8 @@ class Core(commands.Cog):
     async def av(self, ctx, *user):
         if user:
             m = user[0]
-            if m.startswith('<@!'):
-                m = m.lstrip('<@!')
+            if m.startswith('<@'):
+                m = m.lstrip('<@')
                 m = m.rstrip('>')
                 member = utils.get(ctx.guild.members, id = int(m))
                 if not member:
