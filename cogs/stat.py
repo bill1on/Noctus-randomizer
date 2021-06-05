@@ -29,6 +29,8 @@ class Stats(commands.Cog):
 
     @stat.command()
     async def channel(self, ctx, *channels: discord.TextChannel):
+        if len(channels) > 5:
+            await ctx.send("Can't compare more than 5 channels! (heavy traffic)")
         cname = list()
         emb = core.Core.baseEmb(title = '**Loading...**', description = '')
         emb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
@@ -46,6 +48,8 @@ class Stats(commands.Cog):
 
     @stat.command()
     async def top(self, ctx, *channels: discord.TextChannel):
+        if len(channels) > 5:
+            await ctx.send("Can't compare more than 5 channels! (heavy traffic)")
         clist = list()
         lemb = core.Core.baseEmb(title = '**Loading...**', description = '')
         lemb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
@@ -53,7 +57,7 @@ class Stats(commands.Cog):
         async with ctx.typing():
             for i in channels:
                 ulist = list()
-                async for h in i.history(limit = None):
+                async for h in i.history(limit = 1000):
                     if h.author.bot:
                         continue
                     chc = False
@@ -83,10 +87,10 @@ class Stats(commands.Cog):
                 await ctx.send(f"Less than 3 users have sent in this channel : {channels[i].name}")
                 return
             desc = f"""
-            🥇 | **{nr1u.name}#{nr1u.discriminator}** | {nr1a} messages sent!\n
-            🥈 | **{nr2u.name}#{nr2u.discriminator}** | {nr2a} messages sent!\n
-            🥉 | **{nr3u.name}#{nr3u.discriminator}** | {nr3a} messages sent!\n"""
-            emb.add_field(name = f'{channels[i].name}:\n', value = desc, inline = False)
+            🥇 {nr1u.mention} {nr1a}\n
+            🥈 {nr2u.mention} {nr2a}\n
+            🥉 {nr3u.mention} {nr3a}\n"""
+            emb.add_field(name = f'#{channels[i].name}', value = desc)
         await lmsg.delete()
         await ctx.send(embed = emb)
 
