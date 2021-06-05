@@ -45,10 +45,10 @@ class Stats(commands.Cog):
         await ctx.send(file = dat)
 
     @stat.command()
-    async def user(self, ctx, *users):
+    async def top(self, ctx, *users):
         mlist = usrt.getusers(ctx.guild, users)
-        for i in mlist:
-            await ctx.send(i.name)
+        
+            
 
 
 
