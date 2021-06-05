@@ -26,11 +26,11 @@ def getuser(guild, user):
             return member
     else:
         for i in guild.members:
-            if i.name.lower().startswith(m):
+            if i.name.lower().startswith(m.lower()):
                 member = i
                 break
             elif i.nick:
-                if i.nick.lower().startswith(m):
+                if i.nick.lower().startswith(m.lower()):
                     member = i
                     break
             else:

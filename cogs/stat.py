@@ -45,12 +45,51 @@ class Stats(commands.Cog):
         await ctx.send(file = dat)
 
     @stat.command()
-    async def top(self, ctx, *users):
-        mlist = usrt.getusers(ctx.guild, users)
-        
-            
+    async def top(self, ctx, *channels: discord.TextChannel):
+        clist = list()
+        lemb = core.Core.baseEmb(title = '**Loading...**', description = '')
+        lemb.set_image(url = 'https://cdn.discordapp.com/attachments/842390346029727814/848682289202069584/044.gif')
+        lmsg = await ctx.send(embed = lemb)
+        async with ctx.typing():
+            for i in channels:
+                ulist = list()
+                async for h in i.history(limit = None):
+                    if h.author.bot:
+                        continue
+                    chc = False
+                    if not ulist:
+                        userdat = h.author.id, 1
+                        ulist.append(userdat)
+                        continue
+                    for c in range(0, len(ulist)):
+                        if h.author.id in ulist[c]:
+                            userdat = h.author.id, ulist[c][1] + 1
+                            ulist[c] = userdat
+                            chc = True
+                            break                          
+                    if not chc:
+                        userdat = h.author.id, 1
+                        ulist.append(userdat)
+                ulist.sort(key = lambda x: x[1], reverse= True)
+                clist.append(ulist)
+        emb = core.Core.baseEmb(title = 'Most sent messages', description = '')
+        for i in range(0, len(channels)):
+            try:
+                nr1u = ctx.guild.get_member(clist[i][0][0])
+                nr2u = ctx.guild.get_member(clist[i][1][0])
+                nr3u = ctx.guild.get_member(clist[i][2][0])
+                nr1a, nr2a, nr3a = clist[i][0][1], clist[i][1][1], clist[i][2][1]
+            except IndexError:
+                await ctx.send(f"Less than 3 users have sent in this channel : {channels[i].name}")
+                return
+            desc = f"""
+            🥇 | **{nr1u.name}#{nr1u.discriminator}** | {nr1a} messages sent!\n
+            🥈 | **{nr2u.name}#{nr2u.discriminator}** | {nr2a} messages sent!\n
+            🥉 | **{nr3u.name}#{nr3u.discriminator}** | {nr3a} messages sent!\n"""
+            emb.add_field(name = f'{channels[i].name}:\n', value = desc, inline = False)
+        await lmsg.delete()
+        await ctx.send(embed = emb)
 
-
-
+                    
 def setup(bot):
     bot.add_cog(Stats(bot))
