@@ -1,12 +1,10 @@
 import discord
 from discord.ext import commands    
 import asyncio
-import datetime
 import time
 import random
-import itertools
 from discord import utils
-from discord.ext.commands.core import has_permissions
+from tools import usrt
 
 class Core(commands.Cog):
     emlist = ['<a:ani1:848589054866227230>', '<a:ani:848590642678333440>', '<a:ani3:848589054592155729>']
@@ -140,42 +138,16 @@ class Core(commands.Cog):
     @commands.command()
     async def av(self, ctx, *user):
         if user:
-            m = user[0]
-            if m.startswith('<@!'):
-                m = m.lstrip('<@!')
-                m = m.rstrip('>')
-                member = utils.get(ctx.guild.members, id = int(m))
-                if not member:
-                    raise commands.BadArgument
-                else:
-                    avemb = self.baseEmb(title = f"{member.name}'s avatar", description = '')
-                    img = member.avatar_url
-                    avemb.set_image(url = img)
-                    await ctx.send(embed = avemb)
-            else:
-                for i in ctx.guild.members:
-                    if i.name.lower().startswith(user[0]):
-                        member = i
-                        break
-                    elif i.nick:
-                        if i.nick.lower().startswith(user[0]):
-                            member = i
-                            break
-                    else:
-                        member = None
-                if not member:
-                    raise commands.BadArgument
-                else:
-                    avemb = self.baseEmb(title = f"{member.name}'s avatar", description = '')
-                    img = member.avatar_url
-                    avemb.set_image(url = img)
-                    await ctx.send(embed = avemb)
+            member = usrt.getuser(ctx.guild, user)
+            avemb = self.baseEmb(title = f"{member.name}'s avatar", description = '')
+            img = member.avatar_url
+            avemb.set_image(url = img)
+            await ctx.send(embed = avemb)
         else:
             avemb = self.baseEmb(title = f"{ctx.author.name}'s avatar", description = '')
             img = ctx.author.avatar_url
             avemb.set_image(url = img)
             await ctx.send(embed = avemb)
-
 
 def setup(bot):
     bot.add_cog(Core(bot))

@@ -42,7 +42,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'get':
                 await ctx.send('Please make sure the role name is written correctly.')
-            elif ctx.command.qualified_name == 'av':
+            elif ctx.command.qualified_name == 'av' or ctx.command.qualified_name == 'user':
                 await ctx.send("User not found.")
 
         elif isinstance(error, commands.MissingPermissions):

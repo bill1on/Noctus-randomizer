@@ -4,7 +4,7 @@ from discord.ext import commands
 
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix= 'n!', intents = intents, activity = activity.CustomActivity(name = "hi"))
-extensions = ['cogs.core', 'cogs.errorhandle']
+extensions = ['cogs.core', 'cogs.errorhandle', 'cogs.stat']
 
 
 @client.event
@@ -13,10 +13,7 @@ async def on_ready():
 
 if __name__ == '__main__':
     for extension in extensions:
-        try:
-            client.load_extension(extension)
-        except:
-            print("Couldn't load %s", extension)
+        client.load_extension(extension)
     with open('token.txt', 'r') as f:
         token = f.read()
         client.run(token)
