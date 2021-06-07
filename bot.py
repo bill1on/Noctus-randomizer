@@ -4,7 +4,7 @@ from discord.ext import commands
 
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix= 'n!', intents = intents, activity = activity.CustomActivity(name = "hi"))
-extensions = ['cogs.core', 'cogs.errorhandle', 'cogs.stat']
+extensions = ['cogs.core', 'cogs.errorhandle', 'cogs.stat', 'cogs.mod']
 
 
 @client.event

@@ -57,7 +57,7 @@ class Stats(commands.Cog):
         async with ctx.typing():
             for i in channels:
                 ulist = list()
-                async for h in i.history(limit = 1000):
+                async for h in i.history(limit = None):
                     if h.author.bot:
                         continue
                     chc = False
